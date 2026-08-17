@@ -1,0 +1,815 @@
+/* ---------------------------------------------------------------------------
+   Design tokens
+   Dark-first. Colours are authored in oklch so the accent keeps a consistent
+   perceived lightness against both backgrounds.
+--------------------------------------------------------------------------- */
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --glow {
+  syntax: '<percentage>';
+  initial-value: 0%;
+  inherits: false;
+}
+
+:root {
+  --bg: oklch(0.16 0.012 265);
+  --bg-raised: oklch(0.2 0.015 265);
+  --bg-sunken: oklch(0.13 0.012 265);
+  --line: oklch(0.32 0.018 265);
+  --text: oklch(0.95 0.005 265);
+  --text-dim: oklch(0.72 0.012 265);
+  --text-faint: oklch(0.58 0.014 265);
+  --accent: oklch(0.85 0.19 145);
+  --accent-dim: oklch(0.68 0.15 145);
+  --accent-2: oklch(0.72 0.17 285);
+
+  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.12rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.4vw, 2.4rem);
+  --step-3: clamp(2.2rem, 1.6rem + 3vw, 4rem);
+  --step-4: clamp(3rem, 1.6rem + 6.5vw, 7.5rem);
+
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --measure: 68ch;
+  --radius: 14px;
+
+  color-scheme: dark light;
+  accent-color: var(--accent);
+  interpolate-size: allow-keywords;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: oklch(0.98 0.004 265);
+    --bg-raised: oklch(1 0 0);
+    --bg-sunken: oklch(0.95 0.006 265);
+    --line: oklch(0.87 0.01 265);
+    --text: oklch(0.22 0.015 265);
+    --text-dim: oklch(0.42 0.015 265);
+    --text-faint: oklch(0.58 0.014 265);
+    --accent: oklch(0.55 0.16 145);
+    --accent-dim: oklch(0.62 0.14 145);
+    --accent-2: oklch(0.5 0.18 285);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.05;
+  margin: 0;
+  font-weight: 620;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in oklch, currentColor 35%, transparent);
+  text-underline-offset: 0.25em;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.wrap {
+  width: min(100% - var(--gutter) * 2, 1180px);
+  margin-inline: auto;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll-driven animations
+   These use native scroll timelines — no IntersectionObserver, no JS. Browsers
+   without support simply render the final state, which is why every rule is
+   nested inside the support query and the base state is fully visible.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 28%;
+    }
+
+    .reveal-up {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    /* Children stagger by leaning on their own view timelines rather than
+       delays, so the rhythm holds no matter how fast you scroll. */
+    .stagger > * {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+
+    .progress-bar {
+      animation: grow linear both;
+      animation-timeline: scroll(root block);
+      transform-origin: left center;
+    }
+
+    .parallax-slow {
+      animation: drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+
+    .fade-edge {
+      animation: fade-out linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(2.2rem);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(2rem);
+  }
+  to {
+    transform: translateY(-2rem);
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0.15;
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes spin-angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Entry animation for above-the-fold content.
+   @starting-style gives a real entry transition without a JS "loaded" class.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .enter {
+    opacity: 1;
+    translate: none;
+    transition:
+      opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      translate 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  @starting-style {
+    .enter {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Components
+--------------------------------------------------------------------------- */
+
+.progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 2px;
+  z-index: 100;
+  background: color-mix(in oklch, var(--line) 60%, transparent);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* Nav ------------------------------------------------------------------- */
+
+.nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px) saturate(1.4);
+  background: color-mix(in oklch, var(--bg) 72%, transparent);
+  border-block-end: 1px solid color-mix(in oklch, var(--line) 55%, transparent);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.9rem;
+}
+
+.nav__links {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.nav__links a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .nav__links li:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* Hero ------------------------------------------------------------------ */
+
+.hero {
+  position: relative;
+  padding-block: clamp(5rem, 16vh, 11rem) clamp(4rem, 10vh, 8rem);
+  isolation: isolate;
+  overflow: clip;
+}
+
+.hero__aura {
+  position: absolute;
+  z-index: -1;
+  inset-block-start: -30%;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(140vw, 1100px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--angle),
+    color-mix(in oklch, var(--accent) 30%, transparent),
+    color-mix(in oklch, var(--accent-2) 30%, transparent),
+    color-mix(in oklch, var(--accent) 30%, transparent)
+  );
+  filter: blur(90px);
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__aura {
+    animation: spin-angle 22s linear infinite;
+  }
+}
+
+.hero__eyebrow {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hero__eyebrow::before {
+  content: '';
+  inline-size: 2.5rem;
+  block-size: 1px;
+  background: currentColor;
+}
+
+.hero__name {
+  font-size: var(--step-4);
+  margin-block: 0.4em 0.3em;
+  background: linear-gradient(
+    120deg,
+    var(--text) 20%,
+    var(--accent) 50%,
+    var(--text) 80%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__name {
+    animation: sheen 9s ease-in-out infinite;
+  }
+}
+
+@keyframes sheen {
+  0%,
+  100% {
+    background-position: 130% 0;
+  }
+  50% {
+    background-position: -30% 0;
+  }
+}
+
+.hero__tagline {
+  font-size: var(--step-2);
+  color: var(--text);
+  max-inline-size: 22ch;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.hero__intro {
+  color: var(--text-dim);
+  max-inline-size: var(--measure);
+  margin-block-start: 1.6rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-start: 2.4rem;
+}
+
+.btn {
+  --glow: 0%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--step--1);
+  font-weight: 500;
+  transition:
+    border-color 0.3s,
+    background 0.3s,
+    translate 0.3s;
+}
+
+.btn:hover {
+  translate: 0 -2px;
+  border-color: var(--accent);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: oklch(0.16 0.012 265);
+  border-color: var(--accent);
+  font-weight: 620;
+}
+
+.btn--primary:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent-dim);
+}
+
+/* Section scaffolding --------------------------------------------------- */
+
+.section {
+  padding-block: clamp(4rem, 11vh, 8rem);
+  border-block-start: 1px solid color-mix(in oklch, var(--line) 45%, transparent);
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-block-end: clamp(2rem, 5vh, 3.5rem);
+}
+
+.section__title {
+  font-size: var(--step-3);
+}
+
+.section__count {
+  color: var(--text-faint);
+}
+
+/* Project cards --------------------------------------------------------- */
+
+.projects {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.card {
+  position: relative;
+  padding: clamp(1.4rem, 3.5vw, 2.6rem);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    var(--bg-raised),
+    color-mix(in oklch, var(--bg-raised) 80%, var(--bg))
+  );
+  transition: border-color 0.4s, translate 0.4s;
+}
+
+/* Conic border that only spins while hovered — cheap, and it stays still
+   until you interact, so the page isn't busy at rest. */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 55%,
+    var(--accent),
+    var(--accent-2),
+    transparent 85%
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.45s;
+  pointer-events: none;
+}
+
+.card:hover::before,
+.card:focus-within::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover::before,
+  .card:focus-within::before {
+    animation: spin-angle 4s linear infinite;
+  }
+
+  .card:hover {
+    translate: 0 -4px;
+  }
+}
+
+.card__top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.card__title {
+  font-size: var(--step-2);
+}
+
+.card__subtitle {
+  color: var(--accent);
+  margin-block-start: 0.35rem;
+}
+
+.card__meta {
+  color: var(--text-faint);
+  text-align: end;
+  flex-shrink: 0;
+}
+
+.card__summary {
+  color: var(--text-dim);
+  max-inline-size: var(--measure);
+  margin-block-start: 1.1rem;
+}
+
+.card__body {
+  display: grid;
+  gap: 1.5rem;
+  margin-block-start: 1.6rem;
+  grid-template-columns: 1fr;
+}
+
+@container (min-width: 700px) {
+  .card__body {
+    grid-template-columns: 1.6fr 1fr;
+  }
+}
+
+.projects {
+  container-type: inline-size;
+}
+
+.card__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.card__list li {
+  position: relative;
+  padding-inline-start: 1.4rem;
+  color: var(--text-dim);
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
+.card__list li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.62em;
+  inline-size: 0.5rem;
+  block-size: 1px;
+  background: var(--accent);
+}
+
+.card__side {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.metric {
+  border-inline-start: 2px solid var(--accent);
+  padding-inline-start: 0.9rem;
+}
+
+.metric__value {
+  font-size: var(--step-2);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  display: block;
+}
+
+.metric__label {
+  color: var(--text-faint);
+  font-size: var(--step--1);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  background: var(--bg-sunken);
+}
+
+.card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block-start: 1.6rem;
+  padding-block-start: 1.3rem;
+  border-block-start: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+}
+
+.card__links a {
+  color: var(--text);
+  font-size: var(--step--1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.25s, gap 0.25s;
+}
+
+.card__links a:hover {
+  color: var(--accent);
+  gap: 0.7rem;
+}
+
+.card__links a::after {
+  content: '→';
+}
+
+/* Skills ---------------------------------------------------------------- */
+
+.skills {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+}
+
+.skills__group {
+  background: var(--bg);
+  padding: clamp(1.2rem, 3vw, 1.9rem);
+  transition: background 0.35s;
+}
+
+.skills__group:hover {
+  background: var(--bg-raised);
+}
+
+.skills__name {
+  color: var(--accent);
+  margin-block-end: 0.9rem;
+}
+
+/* About / education ----------------------------------------------------- */
+
+.split {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+
+.stat-row {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border-block: 1px solid var(--line);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  margin-block: clamp(2.5rem, 6vh, 4rem);
+}
+
+.stat {
+  background: var(--bg);
+  padding: 1.4rem 1rem;
+  text-align: center;
+}
+
+.stat__value {
+  display: block;
+  font-size: var(--step-2);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat__label {
+  color: var(--text-faint);
+  font-size: var(--step--1);
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.3rem, 3vw, 2rem);
+  background: var(--bg-raised);
+}
+
+.panel h3 {
+  font-size: var(--step-1);
+}
+
+.dl {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.2rem 0 0;
+  color: var(--text-dim);
+}
+
+/* Contact --------------------------------------------------------------- */
+
+.contact {
+  text-align: center;
+  padding-block: clamp(5rem, 14vh, 9rem);
+}
+
+.contact__mail {
+  display: inline-block;
+  font-size: clamp(1.4rem, 5vw, 3.4rem);
+  font-weight: 620;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+  margin-block: 1.5rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: background-position 0.6s;
+  word-break: break-word;
+}
+
+.contact__mail:hover {
+  background-position: 100% 0;
+}
+
+.footer {
+  border-block-start: 1px solid var(--line);
+  padding-block: 2.5rem;
+  color: var(--text-faint);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
