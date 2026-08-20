@@ -62,7 +62,7 @@ export const projects: Project[] = [
     ],
     stack: ['Next.js 16', 'TypeScript', 'Prisma', 'Neon PostgreSQL', 'Vercel'],
     links: [
-      { label: 'Live site', href: 'https://wwfest.vercel.app' },
+      { label: 'Repository', href: 'https://github.com/heinthant2k4/whole-welcome-festival-2026' },
     ],
     metric: { value: '<24h', label: 'build to launch' },
   },
