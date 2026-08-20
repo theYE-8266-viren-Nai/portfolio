@@ -185,6 +185,41 @@ export const projects: Project[] = [
       { label: 'Repository', href: 'https://github.com/theYE-8266-viren-Nai/cafe_management_system' },
     ],
   },
+  {
+    title: 'School Timetable & Records Management System',
+    subtitle: 'Console-based academic system in C++',
+    kind: 'academic',
+    period: 'Jul 2025',
+    summary:
+      'A console-based school management system, about 900 lines, handling nested timetable scheduling and student/teacher records with no external libraries.',
+    highlights: [
+      'Nested year → semester → section → day → period data model for timetable scheduling',
+      'Binary file serialization for timetables, text-file persistence for student and teacher records',
+      'Input validation with C++ <regex>, and separate student and teacher login flows',
+    ],
+    stack: ['C++', 'File I/O', 'Regex'],
+    links: [
+      { label: 'Repository', href: 'https://github.com/theYE-8266-viren-Nai/cpp-school-management-system' },
+    ],
+  },
+];
+
+// Smaller, real repos that don't warrant a full project card — either
+// because the scope is small (a browser extension) or the contribution
+// was real but not the core of the work (see the description on each).
+export const otherRepos = [
+  {
+    title: 'UIT Attendance Tracker',
+    description:
+      'A Chrome extension paired with a small Express API that reads attendance percentage straight off the UIT LMS page and surfaces it in a popup — built to stop clicking through Moodle just to check a number.',
+    href: 'https://github.com/theYE-8266-viren-Nai/attendenceLmsScrape',
+  },
+  {
+    title: 'MyanType-React',
+    description:
+      'Contributed to a Myanmar/English typing-test web app built during a "One Project One Month" community sprint led by Ko San Lynn Htun. The original product concept was mine, though the codebase was mostly built by teammates.',
+    href: 'https://github.com/one-project-one-month/MyanType-React',
+  },
 ];
 
 export const skills = [

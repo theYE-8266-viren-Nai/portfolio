@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { profile, education, projects, skills, speaking } from '../data/site';
+import { profile, education, projects, skills, speaking, otherRepos } from '../data/site';
 
 const freelance = projects.filter((p) => p.kind === 'freelance');
 const hackathon = projects.filter((p) => p.kind === 'hackathon');
@@ -106,6 +106,29 @@ const nav = [
       </div>
     </section>
 
+    <!-- Other repositories ----------------------------------------------- -->
+    <section class="section" id="other">
+      <div class="wrap">
+        <div class="section__head reveal">
+          <h2 class="section__title">Other repositories</h2>
+          <span class="section__count mono">smaller in scope, still real</span>
+        </div>
+        <div class="repo-list stagger">
+          {
+            otherRepos.map((r) => (
+              <a class="repo-item" href={r.href} target="_blank" rel="noopener noreferrer">
+                <div>
+                  <h3 class="repo-item__title">{r.title}</h3>
+                  <p class="repo-item__desc">{r.description}</p>
+                </div>
+                <span class="repo-item__arrow" aria-hidden="true">→</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
     <!-- Skills ---------------------------------------------------------- -->
     <section class="section" id="skills">
       <div class="wrap">
@@ -178,7 +201,8 @@ const nav = [
       <span>
         <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a> ·
         <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a> ·
-        <a href={`mailto:${profile.email}`}>Email</a>
+        <a href={`mailto:${profile.email}`}>Email</a> ·
+        <a href="https://github.com/theYE-8266-viren-Nai/portfolio" target="_blank" rel="noopener noreferrer">Source</a>
       </span>
     </footer>
   </main>
