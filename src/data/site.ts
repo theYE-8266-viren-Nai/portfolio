@@ -82,8 +82,8 @@ export const projects: Project[] = [
     ],
     stack: ['Laravel 12', 'PHP 8.4', 'React 18', 'TypeScript', 'Vite'],
     links: [
-      { label: 'API', href: 'https://github.com/theYE-8266-viren-Nai/AuraFit' },
-      { label: 'Frontend', href: 'https://github.com/theYE-8266-viren-Nai/AuraFitGym' },
+      { label: 'API Repo', href: 'https://github.com/theYE-8266-viren-Nai/AuraFit' },
+      { label: 'Frontend Repo', href: 'https://github.com/theYE-8266-viren-Nai/AuraFitGym' },
     ],
     metric: { value: '32', label: 'API endpoints' },
   },
@@ -163,8 +163,8 @@ export const projects: Project[] = [
     ],
     stack: ['Spring Boot 3.5', 'Java 17', 'PostgreSQL', 'React 19', 'JWT'],
     links: [
-      { label: 'Backend', href: 'https://github.com/theYE-8266-viren-Nai/scb' },
-      { label: 'Frontend', href: 'https://github.com/theYE-8266-viren-Nai/sbcp' },
+      { label: 'Backend Repo', href: 'https://github.com/theYE-8266-viren-Nai/scb' },
+      { label: 'Frontend Repo', href: 'https://github.com/theYE-8266-viren-Nai/sbcp' },
     ],
   },
   {
