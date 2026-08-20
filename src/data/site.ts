@@ -62,7 +62,6 @@ export const projects: Project[] = [
     ],
     stack: ['Next.js 16', 'TypeScript', 'Prisma', 'Neon PostgreSQL', 'Vercel'],
     links: [
-      { label: 'Repository', href: 'https://github.com/heinthant2k4/whole-welcome-festival-2026' },
       { label: 'Live site', href: 'https://wwfest.vercel.app' },
     ],
     metric: { value: '<24h', label: 'build to launch' },
@@ -213,12 +212,6 @@ export const otherRepos = [
     description:
       'A Chrome extension paired with a small Express API that reads attendance percentage straight off the UIT LMS page and surfaces it in a popup — built to stop clicking through Moodle just to check a number.',
     href: 'https://github.com/theYE-8266-viren-Nai/attendenceLmsScrape',
-  },
-  {
-    title: 'MyanType-React',
-    description:
-      'Contributed to a Myanmar/English typing-test web app built during a "One Project One Month" community sprint led by Ko San Lynn Htun. The original product concept was mine, though the codebase was mostly built by teammates.',
-    href: 'https://github.com/one-project-one-month/MyanType-React',
   },
 ];
 
