@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { profile, education, projects, skills, speaking, otherRepos } from '../data/site';
+import { profile, achievements, education, projects, skills, speaking, otherRepos } from '../data/site';
 
 const freelance = projects.filter((p) => p.kind === 'freelance');
 const hackathon = projects.filter((p) => p.kind === 'hackathon');
@@ -41,12 +41,28 @@ const nav = [
       <div class="hero__aura" aria-hidden="true"></div>
       <div class="wrap">
         <p class="hero__eyebrow mono enter" style="--i:0">{profile.location}</p>
-        <h1 class="hero__name enter" style="--i:1">{profile.name}</h1>
-        <p class="hero__tagline enter" style="--i:2">{profile.tagline}</p>
-        <div class="hero__intro enter" style="--i:3">
+        <div class="achievement-bar enter" style="--i:1">
+          <div class="achievement-bar__heading mono">Achievements</div>
+          <div class="achievement-bar__list">
+            {achievements.map((achievement) => (
+              <span class="achievement-pill">
+                <strong>{achievement.result}</strong>
+                <span>{achievement.event}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+        <h1 class="hero__name enter" style="--i:2">{profile.name}</h1>
+        <p class="hero__tagline enter" style="--i:3">{profile.tagline}</p>
+        <div class="hero__intro enter" style="--i:4">
           {profile.intro.map((p) => <p>{p}</p>)}
         </div>
-        <div class="hero__actions enter" style="--i:4">
+        <p class="live-vote-callout enter" style="--i:5">
+          <span class="live-vote-callout__dot" aria-hidden="true"></span>
+          <strong>Live voting experience</strong>
+          <span>Handled real-time vote processing, rate limiting, and vote integrity for a public festival platform.</span>
+        </p>
+        <div class="hero__actions enter" style="--i:6">
           <a class="btn btn--primary" href={`mailto:${profile.email}`}>Get in touch</a>
           <a class="btn" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>
           <a class="btn" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>

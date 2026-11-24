@@ -18,6 +18,12 @@ export const profile = {
   ],
 };
 
+export const achievements = [
+  { result: 'Winner', event: "Let's Tech Hackathon 2026" },
+  { result: '2nd Runner-Up', event: 'UIT Innovative Hackathon 2026' },
+  { result: '2nd Runner-Up', event: 'Hackathon Myanmar 2023' },
+];
+
 export const education = {
   school: 'University of Information Technology',
   degree: 'Bachelor of Computer Science, Major in Software Engineering',
